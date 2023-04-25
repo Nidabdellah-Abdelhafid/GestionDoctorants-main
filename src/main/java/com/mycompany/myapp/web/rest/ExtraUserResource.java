@@ -3,6 +3,9 @@ package com.mycompany.myapp.web.rest;
 import com.mycompany.myapp.domain.ExtraUser;
 import com.mycompany.myapp.domain.Sujet;
 import com.mycompany.myapp.repository.ExtraUserRepository;
+import com.mycompany.myapp.repository.UserRepository;
+import com.mycompany.myapp.security.AuthoritiesConstants;
+import com.mycompany.myapp.security.SecurityUtils;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -34,11 +37,13 @@ public class ExtraUserResource {
 
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
+    private UserRepository userRepository;
 
     private final ExtraUserRepository extraUserRepository;
 
-    public ExtraUserResource(ExtraUserRepository extraUserRepository) {
+    public ExtraUserResource(ExtraUserRepository extraUserRepository,UserRepository userRepository) {
         this.extraUserRepository = extraUserRepository;
+        this.userRepository=userRepository;
     }
 
     /**
@@ -176,6 +181,16 @@ public class ExtraUserResource {
         return extraUserRepository.findAll();
     }
 
+    @GetMapping("/extra-users/users")
+    public List<ExtraUser> getAllExtraUserss() {
+        if(SecurityUtils.hasCurrentUserAnyOfAuthorities(AuthoritiesConstants.PROFESSEUR)){
+            return  extraUserRepository.extrauser(userRepository.getByLogin(SecurityUtils.getCurrentUserLogin().get()));
+        }else{
+            log.debug("REST request to get all ExtraUsers");
+            return extraUserRepository.findAll();
+        }
+
+    }
     /**
      * {@code GET  /extra-users/:id} : get the "id" extraUser.
      *
@@ -188,10 +203,29 @@ public class ExtraUserResource {
         Optional<ExtraUser> extraUser = extraUserRepository.findById(id);
         return ResponseUtil.wrapOrNotFound(extraUser);
     }
+    @GetMapping("/extra-users/professeure")
+    public List<ExtraUser> getExtraUserbyProfessseure() {
+        log.debug("REST request to get all Sujets");
+        return extraUserRepository.findExtraUsersWithAuthority();
+    }
     @GetMapping("/extra-users/professeur")
     public List<ExtraUser> getExtraUserbyProfessseur() {
         log.debug("REST request to get all Sujets");
-        return extraUserRepository.findExtraUsersWithAuthority();
+        return extraUserRepository.findExtraUsersWithAuthority1();
+    }
+    @GetMapping("/extra-users/membre")
+    public List<ExtraUser> getExtraUserselect() {
+        log.debug("REST request to get all Sujets");
+        return extraUserRepository.findExtraUsersWithAuthority11();
+    }
+    @GetMapping("/extra-users/membreequipe")
+    public List<ExtraUser> getExtraUserbymembreequipe() {
+        if(SecurityUtils.hasCurrentUserAnyOfAuthorities(AuthoritiesConstants.PROFESSEUR)){
+            return  extraUserRepository.extrausermembre(userRepository.getByLogin(SecurityUtils.getCurrentUserLogin().get()));
+        }else{
+            log.debug("REST request to get all ExtraUsers");
+            return extraUserRepository.findAll();
+        }
     }
     /**
      * {@code DELETE  /extra-users/:id} : delete the "id" extraUser.

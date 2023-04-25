@@ -54,7 +54,9 @@ export class LaboratoireUpdateComponent implements OnInit {
     this.isSaving = true;
     this.laboratoire = this.createFromForm();
     if (this.laboratoire.id !== undefined) {
+
       this.subscribeToSaveResponse1(this.laboratoireService.update(this.laboratoire));
+
       if(this.editForm.get(['extrauser'])!.value !== null){
       this.subscribeToSaveResponseup(this.cheflaboratoireservice.updatedate(this.laboratoire.id));}
 
@@ -162,7 +164,7 @@ protected loadRelationshipsOptionsupdate(): void {
     return {
       ...new ChefLab(),
       dateDebut:dayjs(),
-      dateFin: dayjs().set('year', 0).set('month', 0).set('day', 0),
+      dateFin: dayjs('2000-04-28'),
       extraUser:  this.editForm.get(['extrauser'])!.value,
       laboratoire : laboratoire1,
     };

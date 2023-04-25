@@ -195,18 +195,19 @@
                 <span jhiTranslate="global.menu.entities.etablissement">Etablissement</span>
               </a>
             </li>
-            <li>
-              <a
-                class="dropdown-item"
+            <li *ngIf=" chefLabs && chefLabs.length !== 0">
+              <a class="dropdown-item"
                 routerLink="equipe"
                 routerLinkActive="active"
-                [routerLinkActiveOptions]="{ exact: true }"
-                (click)="collapseNavbar()"
-              >
+                [routerLinkActiveOptions]="{ exact: false }"
+                (click)="collapseNavbar()">
+
                 <fa-icon icon="asterisk" [fixedWidth]="true"></fa-icon>
-                <span jhiTranslate="global.menu.entities.equipe">Equipe</span>
+                <span>Equipe</span>
               </a>
             </li>
+
+
             <li>
               <a
                 class="dropdown-item"
@@ -253,6 +254,7 @@
                 routerLinkActive="active"
                 [routerLinkActiveOptions]="{ exact: true }"
                 (click)="collapseNavbar()"
+                *jhiHasAnyAuthority="['ROLE_RESPONSABLE']"
               >
                 <fa-icon icon="asterisk" [fixedWidth]="true"></fa-icon>
                 <span jhiTranslate="global.menu.entities.laboratoire">Laboratoire</span>
@@ -265,7 +267,7 @@
                 routerLinkActive="active"
                 [routerLinkActiveOptions]="{ exact: true }"
                 (click)="collapseNavbar()"
-                *ngIf="false"
+                *jhiHasAnyAuthority="['ROLE_PROFESSEUR']"
               >
                 <fa-icon icon="asterisk" [fixedWidth]="true"></fa-icon>
                 <span jhiTranslate="global.menu.entities.membreEquipe">Membre Equipe</span>

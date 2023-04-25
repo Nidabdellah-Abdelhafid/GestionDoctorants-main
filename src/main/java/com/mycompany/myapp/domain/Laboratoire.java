@@ -1,6 +1,9 @@
 package com.mycompany.myapp.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
@@ -31,7 +34,9 @@ public class Laboratoire implements Serializable {
 
     @OneToMany(mappedBy = "laboratoire")
     @JsonIgnoreProperties(value = { "laboratoire", "membreEquipes" }, allowSetters = true)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<Equipe> equipes = new HashSet<>();
+
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 

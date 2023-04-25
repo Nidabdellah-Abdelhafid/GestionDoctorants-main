@@ -24,8 +24,7 @@ public class ChefEquipe implements Serializable {
     @Column(name = "date_debut", nullable = false)
     private LocalDate dateDebut;
 
-    @NotNull
-    @Column(name = "date_fin", nullable = false)
+    @Column(name = "date_fin", nullable = true)
     private LocalDate dateFin;
 
     @JsonIgnoreProperties(value = { "internalUser", "sujets", "membreEquipes" }, allowSetters = true)

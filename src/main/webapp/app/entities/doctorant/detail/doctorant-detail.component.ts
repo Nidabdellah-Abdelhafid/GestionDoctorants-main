@@ -40,8 +40,10 @@ export class DoctorantDetailComponent implements OnInit {
   types!:string[];
   login!:string;
 
-  constructor(protected publicationService: PublicationService,protected doctorantService: DoctorantService,private userService: UserManagementService,public _sanitizer: DomSanitizer,protected dataUtils: DataUtils, protected activatedRoute: ActivatedRoute, protected bacService: BacService, protected formationDoctorantService:FormationDoctorantService, protected formationService: FormationService, protected serviceDoctorant: DoctorantService, protected modalService: NgbModal, private accountService: AccountService) {}
+  constructor(protected publicationService: PublicationService,protected doctorantService: DoctorantService,private userService: UserManagementService,public _sanitizer: DomSanitizer,protected dataUtils: DataUtils, protected activatedRoute: ActivatedRoute, protected bacService: BacService, protected formationDoctorantService:FormationDoctorantService, protected formationService: FormationService, protected serviceDoctorant: DoctorantService, protected modalService: NgbModal, private accountService: AccountService) {
+  }
   loadAll(): void {
+    
     this.activatedRoute.data.subscribe(({ doctorant }) => {
       this.doctorant = doctorant;
       this.login=doctorant.user?.login;
@@ -105,6 +107,7 @@ export class DoctorantDetailComponent implements OnInit {
 
   }
   ngOnInit(): void {
+
 this.loadAll();
 
   }

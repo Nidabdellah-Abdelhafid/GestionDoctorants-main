@@ -2,6 +2,8 @@ import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {TranslateService} from '@ngx-translate/core';
 import {SessionStorageService} from 'ngx-webstorage';
+import { ChefLabService } from 'app/entities/chef-lab/service/chef-lab.service';
+import { IChefLab } from 'app/entities/chef-lab/chef-lab.model';
 
 import {VERSION} from 'app/app.constants';
 import {LANGUAGES} from 'app/config/language.constants';
@@ -32,16 +34,23 @@ export class NavbarComponent implements OnInit {
   entitiesNavbarItems: any[] = [];
   nbNotification!: number;
   notification!: Notification[];
+  chefLabs: IChefLab[]=[];
+  isLoggedIn!: boolean;
+  hasChefLab! :boolean ;
+
+
   constructor(
     private loginService: LoginService,
     protected notificationService: NotificationService,
     private translateService: TranslateService,
     private sessionStorageService: SessionStorageService,
-    private accountService: AccountService,
+    public accountService: AccountService,
     private profileService: ProfileService,
     private router: Router
+    ,private cheflaboratoireservice: ChefLabService
     , public _sanitizer: DomSanitizer
   ) {
+
     if (VERSION) {
       this.version = VERSION.toLowerCase().startsWith('v') ? VERSION : `v${VERSION}`;
     }
@@ -51,6 +60,7 @@ export class NavbarComponent implements OnInit {
   }
 
   loadAll(): void {
+
     this.notificationService.findNonLu().subscribe({
       next:(res: HttpResponse<Notification[]>) => {
         this.notification = res.body ?? [];
@@ -73,10 +83,34 @@ export class NavbarComponent implements OnInit {
       this.account = account;
     });
 
+
+
   }
   ngOnInit(): void {
-    this.entitiesNavbarItems = EntityNavbarItems;
+    this.loadall1();
     this.loadAll();
+    this.entitiesNavbarItems = EntityNavbarItems;
+
+  }
+
+
+  loadall1(): void {
+    this.chefLabs.splice(0, this.chefLabs.length);
+
+    this.cheflaboratoireservice.queryparuser().subscribe({
+      next: (res: HttpResponse<IChefLab[]>) => {
+        this.chefLabs = res.body ?? [];
+        if (this.chefLabs.length !== 0) {
+
+          this.hasChefLab = true;
+
+        }else{
+          this.chefLabs.splice(0, this.chefLabs.length);
+
+        }
+        // Mettre à jour les entités de l'équipe
+      }
+    });
   }
 
   changeLanguage(languageKey: string): void {
@@ -85,17 +119,27 @@ export class NavbarComponent implements OnInit {
   }
 
   collapseNavbar(): void {
+    this.loadall1();
+
     this.isNavbarCollapsed = true;
   }
 
   login(): void {
+    this.loadall1();
+
     this.router.navigate(['/login']);
+    this.loadall1();
+
   }
 
   logout(): void {
     this.collapseNavbar();
     this.loginService.logout();
     this.router.navigate(['']);
+    this.chefLabs.splice(0, this.chefLabs.length);
+
+
+
   }
 
   toggleNavbar(): void {
@@ -104,6 +148,9 @@ export class NavbarComponent implements OnInit {
 
 
   changeTrue(notif : Notification): void {
-    this.notificationService.update({ ...notif, vu: true }).subscribe(() => this.loadAll());
+    this.notificationService.update({ ...notif, vu: true }).subscribe(() =>{
+    this.loadAll();
+    this.loadall1();
+     } );
   }
 }

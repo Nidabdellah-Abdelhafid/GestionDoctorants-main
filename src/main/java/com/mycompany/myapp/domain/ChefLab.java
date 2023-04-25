@@ -1,6 +1,9 @@
 package com.mycompany.myapp.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import java.io.Serializable;
 import java.time.LocalDate;
 import javax.persistence.*;
@@ -24,8 +27,7 @@ public class ChefLab implements Serializable {
     @Column(name = "date_debut", nullable = false)
     private LocalDate dateDebut;
 
-    @NotNull
-    @Column(name = "date_fin", nullable = false)
+    @Column(name = "date_fin", nullable = true)
     private LocalDate dateFin;
 
     @JsonIgnoreProperties(value = { "internalUser", "sujets", "membreEquipes" }, allowSetters = true)
@@ -36,6 +38,7 @@ public class ChefLab implements Serializable {
     @JsonIgnoreProperties(value = { "equipes" }, allowSetters = true)
     @OneToOne
     @JoinColumn(unique = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Laboratoire laboratoire;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
